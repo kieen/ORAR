@@ -1,18 +1,14 @@
 package orar.materializer;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 import orar.abstraction.AbstractionGenerator;
@@ -36,7 +32,6 @@ import orar.rolereasoning.RoleReasoner;
 import orar.ruleengine.RuleEngine;
 import orar.ruleengine.SemiNaiveRuleEngine;
 import orar.type.IndividualType;
-import orar.util.MapOperator;
 import orar.util.PrintingHelper;
 
 public abstract class MaterializerTemplate2 implements Materializer {
@@ -398,117 +393,7 @@ public abstract class MaterializerTemplate2 implements Materializer {
 	}
 
 
-	/**
-	 * Complete ABox wrt sameas
-	 */
-	private void completeABoxWrtSameas() {
-		long startTime = System.currentTimeMillis();
-		Set<Integer> allIndividualInAllSameasAssertion = this.normalizedORAROntology.getSameasBox().getAllIndividuals();
-		Set<Integer> processedIndividuals = new HashSet<Integer>();
-		for (Integer eachInd : allIndividualInAllSameasAssertion) {
-			if (!processedIndividuals.contains(eachInd)) {
-				completeConceptAssertionWrtSameas(eachInd);
-				completePreRoleAssertionWrtSameas(eachInd);
-				completeSuccRoleAsesrtionWrtSameas(eachInd);
-
-				/*
-				 * put this individual and its sameas to the set of processed
-				 * individuals
-				 */
-				Set<Integer> sameIndividuals = this.normalizedORAROntology.getSameIndividuals(eachInd);
-				sameIndividuals.add(eachInd);
-				processedIndividuals.addAll(sameIndividuals);
-			}
-		}
-		long endTime = System.currentTimeMillis();
-		long time = (endTime - startTime) / 1000;
-		if (this.config.getLogInfos().contains(LogInfo.TIME_STAMP_FOR_EACH_STEP)) {
-			logger.info(
-					"Time for completing ABox wrt sameas after abstraction procedure terminated (seconds): " + time);
-		}
-	}
-
-	private void completeConceptAssertionWrtSameas(int individual) {
-		Set<Integer> sameIndividuals = this.normalizedORAROntology.getSameIndividuals(individual);
-		sameIndividuals.add(individual);
-		if (sameIndividuals.size() > 1) {
-			/*
-			 * accumulate asserted concepts
-			 */
-			Set<OWLClass> accumulatedConcepts = new HashSet<OWLClass>();
-			for (Integer eachInd : sameIndividuals) {
-				accumulatedConcepts.addAll(this.normalizedORAROntology.getAssertedConcepts(eachInd));
-			}
-			/*
-			 * add accumulated concepts for each individual
-			 */
-			for (Integer eachInd : sameIndividuals) {
-				this.normalizedORAROntology.addManyConceptAssertions(eachInd, accumulatedConcepts);
-			}
-		}
-	}
-
-	private void completePreRoleAssertionWrtSameas(int individual) {
-		Set<Integer> sameIndividuals = this.normalizedORAROntology.getSameIndividuals(individual);
-		sameIndividuals.add(individual);
-		/*
-		 * accumulate role asesrtions
-		 */
-		Map<OWLObjectProperty, Set<Integer>> predecessorMap = new HashMap<OWLObjectProperty, Set<Integer>>();
-		for (Integer eachInd : sameIndividuals) {
-			MapOperator.addAnotherMap(predecessorMap,
-					this.normalizedORAROntology.getPredecessorRoleAssertionsAsMap(eachInd));
-		}
-
-		/*
-		 * add preRoleAsesrtion for each individual
-		 */
-		if (sameIndividuals.size() > 1) {
-			for (Integer eachInd : sameIndividuals) {
-				Iterator<Entry<OWLObjectProperty, Set<Integer>>> iterator = predecessorMap.entrySet().iterator();
-				while (iterator.hasNext()) {
-					Entry<OWLObjectProperty, Set<Integer>> entry = iterator.next();
-					OWLObjectProperty preRole = entry.getKey();
-					Set<Integer> preInds = entry.getValue();
-					for (Integer eachPreInd : preInds) {
-						this.normalizedORAROntology.addRoleAssertion(eachPreInd, preRole, eachInd);
-					}
-				}
-			}
-		}
-	}
-
-	private void completeSuccRoleAsesrtionWrtSameas(int individual) {
-		Set<Integer> sameIndividuals = this.normalizedORAROntology.getSameIndividuals(individual);
-		sameIndividuals.add(individual);
-		/*
-		 * accumulate role asesrtions
-		 */
-		Map<OWLObjectProperty, Set<Integer>> succRoleMap = new HashMap<OWLObjectProperty, Set<Integer>>();
-		for (Integer eachInd : sameIndividuals) {
-			MapOperator.addAnotherMap(succRoleMap,
-					this.normalizedORAROntology.getSuccessorRoleAssertionsAsMap(eachInd));
-		}
-
-		/*
-		 * add succRole assertions for each individual
-		 */
-		if (sameIndividuals.size() > 1) {
-			for (Integer eachInd : sameIndividuals) {
-				Iterator<Entry<OWLObjectProperty, Set<Integer>>> iterator = succRoleMap.entrySet().iterator();
-				while (iterator.hasNext()) {
-					Entry<OWLObjectProperty, Set<Integer>> entry = iterator.next();
-					OWLObjectProperty succRole = entry.getKey();
-					Set<Integer> succInds = entry.getValue();
-					for (Integer eachSuccInd : succInds) {
-						this.normalizedORAROntology.addRoleAssertion(eachInd, succRole, eachSuccInd);
-					}
-				}
-			}
-		}
-
-	}
-
+	
 	protected abstract List<OWLOntology> getAbstractions(Map<IndividualType, Set<Integer>> typeMap2Individuals);
 
 	protected abstract AssertionTransporter getAssertionTransporter(

@@ -1,5 +1,6 @@
 package orar.modeling.ontology;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -232,7 +233,7 @@ public interface OrarOntology {
 	 * @return get predecessor assertions (stored in a map: role --> set of
 	 *         objects) of the given individual
 	 */
-	public Map<OWLObjectProperty, Set<Integer>> getPredecessorRoleAssertionsAsMap(int objectIndividual);
+	public Map<OWLObjectProperty, List<Integer>> getPredecessorRoleAssertionsAsMap(int objectIndividual);
 
 	public Set<Integer> getPredecessors(int object, OWLObjectProperty role);
 

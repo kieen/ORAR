@@ -1,5 +1,6 @@
 package orar.modeling.roleassertion;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,7 +79,7 @@ public interface RoleAssertionBox {
 	 * @return Predecessor role assertions, stored in a (possibly empty)
 	 *         map:role-->set of predecessor subjects, of the given individual
 	 */
-	public Map<OWLObjectProperty, Set<Integer>> getPredecessorRoleAssertionsAsMap(
+	public Map<OWLObjectProperty, List<Integer>> getPredecessorRoleAssertionsAsMap(
 			Integer objectIndividual);
 
 	

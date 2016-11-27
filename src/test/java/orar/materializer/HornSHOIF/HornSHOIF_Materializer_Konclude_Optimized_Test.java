@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import orar.completenesschecker.CompletenessChecker;
 import orar.completenesschecker.CompletenessCheckerHorn;
 import orar.config.Configuration;
+import orar.config.DebugLevel;
 import orar.config.LogInfo;
 import orar.data.AbstractDataFactory;
 import orar.data.DataForTransferingEntailments;
@@ -425,8 +426,8 @@ public class HornSHOIF_Materializer_Konclude_Optimized_Test {
 
 		Configuration.getInstance().addLoginfoLevels(LogInfo.STATISTIC, LogInfo.REASONING_TIME, LogInfo.LOADING_TIME,
 				LogInfo.DETAILED_STATISTIC);
-		// Configuration.getInstance().addLoginfoLevels(LogInfo.TUNING_SAMEAS);
-		// Configuration.getInstance().addDebugLevels(
+//		 Configuration.getInstance().addLoginfoLevels(LogInfo.TUNING_SAMEAS);
+		 Configuration.getInstance().addDebugLevels(DebugLevel.ABSTRACTION_CREATION);
 		// DebugLevel.PRINT_MARKING_INDIVIDUALS,
 		// DebugLevel.ADDING_MARKING_AXIOMS);
 		System.out.println("Loading ontology for abstraction materializer....");

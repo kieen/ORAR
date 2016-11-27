@@ -3,6 +3,7 @@ package orar.abstraction;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -187,7 +188,7 @@ public class BasicTypeComputor implements TypeComputor {
 		Set<OWLObjectProperty> accumulatedRoles = new HashSet<OWLObjectProperty>();
 		for (Integer ind : individuals) {
 
-			Map<OWLObjectProperty, Set<Integer>> predecessorAssertionMap = orarOntology
+			Map<OWLObjectProperty, List<Integer>> predecessorAssertionMap = orarOntology
 					.getPredecessorRoleAssertionsAsMap(ind);
 			Set<OWLObjectProperty> preRoles = predecessorAssertionMap.keySet();
 			accumulatedRoles.addAll(preRoles);
@@ -197,11 +198,11 @@ public class BasicTypeComputor implements TypeComputor {
 			 * are at least 2 different same individuals.
 			 */
 			if (individuals.size() > 1) {
-				Iterator<Entry<OWLObjectProperty, Set<Integer>>> iterator = predecessorAssertionMap.entrySet()
+				Iterator<Entry<OWLObjectProperty, List<Integer>>> iterator = predecessorAssertionMap.entrySet()
 						.iterator();
 				while (iterator.hasNext()) {
-					Entry<OWLObjectProperty, Set<Integer>> entry = iterator.next();
-					Set<Integer> predecessors = entry.getValue();
+					Entry<OWLObjectProperty, List<Integer>> entry = iterator.next();
+					List<Integer> predecessors = entry.getValue();
 					OWLObjectProperty preRole = entry.getKey();
 					for (Integer eachPredecessors : predecessors) {
 						orarOntology.addRoleAssertion(eachPredecessors, preRole, representative);

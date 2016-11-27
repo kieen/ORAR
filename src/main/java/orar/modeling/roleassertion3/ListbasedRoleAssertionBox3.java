@@ -188,7 +188,7 @@ public class ListbasedRoleAssertionBox3 implements RoleAssertionBox {
 	}
 
 	@Override
-	public Map<OWLObjectProperty, Set<Integer>> getPredecessorRoleAssertionsAsMap(Integer objectIndividual) {
+	public Map<OWLObjectProperty, List<Integer>> getPredecessorRoleAssertionsAsMap(Integer objectIndividual) {
 		return null;
 
 	}

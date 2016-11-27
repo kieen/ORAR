@@ -19,7 +19,7 @@ public class MapbasedRoleAssertionBoxTest {
 	int b = 1;
 	int c = 2;
 
-	RoleAssertionBox roleAssertionBox = new MapbasedRoleAssertionBox();
+	RoleAssertionBox roleAssertionBox = new MapListbasedRoleAssertionBox();
 
 	@Before
 	public void setup() {

@@ -3,6 +3,7 @@ package orar.modeling.ontology;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,7 +28,7 @@ import orar.indexing.IndividualIndexerInterface;
 import orar.indexing.IndividualIndexerUsingMapAndList;
 import orar.modeling.conceptassertion.ArrayBasedConceptAssertionBox;
 import orar.modeling.conceptassertion.ConceptAssertionBox;
-import orar.modeling.roleassertion.MapbasedRoleAssertionBox;
+import orar.modeling.roleassertion.MapListbasedRoleAssertionBox;
 import orar.modeling.roleassertion.RoleAssertionBox;
 import orar.modeling.sameas2.MapbasedSameAsBox2;
 import orar.modeling.sameas2.SameAsBox2;
@@ -77,7 +78,7 @@ public class MapbasedOrarOntology implements OrarOntology {
 	public MapbasedOrarOntology() {
 		this.tboxAxioms = new HashSet<OWLAxiom>();
 		this.conceptAssertionBox = new ArrayBasedConceptAssertionBox();
-		this.roleAssertionBox = new MapbasedRoleAssertionBox();
+		this.roleAssertionBox = new MapListbasedRoleAssertionBox();
 		this.sameasBox = new MapbasedSameAsBox2();
 
 		this.individualsInSignature = new HashSet<Integer>();
@@ -373,19 +374,19 @@ public class MapbasedOrarOntology implements OrarOntology {
 	}
 
 	@Override
-	public Map<OWLObjectProperty, Set<Integer>> getPredecessorRoleAssertionsAsMap(int objectIndividual) {
+	public Map<OWLObjectProperty, List<Integer>> getPredecessorRoleAssertionsAsMap(int objectIndividual) {
 		return this.roleAssertionBox.getPredecessorRoleAssertionsAsMap(objectIndividual);
 	}
 
 	@Override
 	public Set<Integer> getPredecessors(int object, OWLObjectProperty role) {
-		Map<OWLObjectProperty, Set<Integer>> predecessorAssertionAsMap = this.roleAssertionBox
+		Map<OWLObjectProperty, List<Integer>> predecessorAssertionAsMap = this.roleAssertionBox
 				.getPredecessorRoleAssertionsAsMap(object);
-		Set<Integer> setOfPredecessors = predecessorAssertionAsMap.get(role);
-		if (setOfPredecessors == null) {
-			setOfPredecessors = new HashSet<Integer>();
+		List<Integer> listOfPredecessors = predecessorAssertionAsMap.get(role);
+		if (listOfPredecessors == null) {
+			return new HashSet<Integer>();
 		}
-		return setOfPredecessors;
+		return new HashSet<Integer>(listOfPredecessors);
 	}
 
 	@Override
